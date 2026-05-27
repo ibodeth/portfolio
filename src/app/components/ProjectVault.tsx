@@ -11,10 +11,10 @@ export function ProjectVault() {
 
   const featuredProject = {
     id: "proj-cargo",
-    name: "Divizyon Cargo Pilot ✈️📦",
+    name: "Divizyon Cargo Pilot",
     role: t("proj.featuredRole"),
     description: t("proj.featuredDesc"),
-    stack: ["Golang", "Docker Containerization", "Swagger API Docs", "SQL Databases", "Agile Sprints", "Kanban / Scrum Coordination"],
+    stack: ["Golang", "Docker", "Swagger", "SQL", "Agile", "Scrum", "Kanban"],
     icon: Briefcase,
     color: "#6366f1", // indigo accent
     github: "https://cargopilot.divizyon.org/", // live project link
@@ -22,17 +22,8 @@ export function ProjectVault() {
 
   const projects = [
     {
-      id: "proj-1",
-      name: "DeepPi-OLED 🧠 SSD1306",
-      description: t("proj.deepPiDesc"),
-      stack: ["Python", "Raspberry Pi 5", "DeepSeek R1", "SSD1306 OLED", "I2C Bus"],
-      icon: Cpu,
-      color: "#e11d48", // rose
-      github: "https://github.com/ibodeth/DeepPi-OLED",
-    },
-    {
       id: "proj-2",
-      name: "NoteMaster 🧠📄",
+      name: "NoteMaster",
       description: t("proj.noteMasterDesc"),
       stack: ["Flutter", "Dart", "Python", "OpenCV", "Gemini AI"],
       icon: Terminal,
@@ -41,7 +32,7 @@ export function ProjectVault() {
     },
     {
       id: "proj-3",
-      name: "Blink 🤖🎧",
+      name: "Blink",
       description: t("proj.blinkDesc"),
       stack: ["Python", "PyQt5", "Gemini API", "Picovoice", "Edge TTS"],
       icon: Mic,
@@ -50,30 +41,21 @@ export function ProjectVault() {
     },
     {
       id: "proj-4",
-      name: "Agro-ML Predictor 🌾",
+      name: "Agro-ML Predictor",
       description: t("proj.agroDesc"),
-      stack: ["Python", "Scikit-Learn", "SMOTE", "SHAP Analyses", "Pandas"],
+      stack: ["Python", "Scikit-Learn", "SMOTE", "SHAP", "Pandas"],
       icon: Eye,
       color: "#10b981", // emerald
       github: "https://github.com/ibodeth/agro-cevresel-simulasyon-verisiyle-bitki-sagliginin-cok-hedefli-makine-ogrenmesi-ile-tahmini",
     },
     {
       id: "proj-5",
-      name: "NVIDIA Linux Battery Optimizer 🚀",
+      name: "NVIDIA Linux Battery Optimizer",
       description: t("proj.nvidiaDesc"),
-      stack: ["Bash Shell", "udev Rules", "nvidia-smi", "SystemD Hooks"],
+      stack: ["Bash", "udev", "nvidia-smi", "Systemd"],
       icon: Battery,
       color: "#3b82f6", // blue
       github: "https://github.com/ibodeth/nvidia-laptop-battery-optimizer",
-    },
-    {
-      id: "proj-6",
-      name: "ML Music Analyzer 🎵",
-      description: t("proj.musicDesc"),
-      stack: ["Python", "Keras / TensorFlow", "Librosa", "Audio DSP"],
-      icon: Music,
-      color: "#f59e0b", // amber
-      github: "https://github.com/ibodeth/ML-Music-Analyzer",
     },
   ];
 
@@ -86,7 +68,7 @@ export function ProjectVault() {
   return (
     <section
       id="projects"
-      className="relative min-h-screen w-full flex flex-col justify-center py-20 sm:py-24 px-4 sm:px-6 md:px-8 bg-transparent overflow-hidden"
+      className="relative min-h-screen w-full flex flex-col justify-center py-6 lg:pt-24 lg:pb-8 px-4 sm:px-6 md:px-8 bg-transparent overflow-hidden"
     >
       <div className="max-w-7xl mx-auto w-full relative z-10">
         {/* Section Header */}
@@ -95,7 +77,7 @@ export function ProjectVault() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.5 }}
-          className="mb-14 text-left"
+          className="mb-6 text-left"
         >
           <span className="text-sm font-semibold text-indigo-400 font-sans tracking-wide block mb-2 animate-pulse">
             {t("proj.badge")}
@@ -125,7 +107,7 @@ export function ProjectVault() {
             className="w-full cursor-pointer select-none"
             onClick={() => { playClick(); handleCardClick(featuredProject.github); }}
           >
-            <Card className="border border-indigo-500/30 bg-indigo-950/10 hover:bg-indigo-950/15 hover:border-indigo-500/50 backdrop-blur-md transition-all duration-300 relative overflow-hidden p-6 md:p-8 flex flex-col md:flex-row gap-6 items-start md:items-center justify-between">
+            <Card className="border border-indigo-500/30 bg-indigo-950/10 hover:bg-indigo-950/15 hover:border-indigo-500/50 backdrop-blur-md transition-all duration-300 relative overflow-hidden p-5 md:p-6 flex flex-col md:flex-row gap-6 items-start md:items-center justify-between">
               {/* Symmetrical active top glow line */}
               <div
                 className="absolute inset-x-0 top-0 h-[3px]"
@@ -163,7 +145,7 @@ export function ProjectVault() {
                   {featuredProject.stack.map((tech) => (
                     <Badge
                       key={tech}
-                      className="px-2.5 py-0.5 border-indigo-500/20 bg-indigo-950/40 text-indigo-200 text-[0.65rem] font-mono rounded"
+                      className="px-2.5 py-0.5 rounded-md border-slate-800/80 bg-slate-950/20 text-slate-300 hover:text-white hover:border-slate-700 transition-colors text-[0.7rem] font-sans"
                       variant="outline"
                     >
                       {tech}
@@ -179,8 +161,8 @@ export function ProjectVault() {
             </Card>
           </motion.div>
 
-          {/* 2. Symmetrical 3-Column Grid for Open Source Projects */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          {/* 2. Symmetrical 4-Column Grid for Open Source Projects */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
             {projects.map((project, index) => {
               const ProjIcon = project.icon;
               return (
@@ -195,7 +177,7 @@ export function ProjectVault() {
                 >
                   <Card
                     onClick={() => { playClick(); handleCardClick(project.github); }}
-                    className="h-full border border-slate-800/80 bg-slate-950/20 hover:bg-slate-900/20 hover:border-slate-700/60 backdrop-blur-md transition-all duration-300 relative overflow-hidden group flex flex-col justify-between p-6 cursor-pointer select-none"
+                    className="h-full border border-slate-800/80 bg-slate-950/20 hover:bg-slate-900/20 hover:border-slate-700/60 backdrop-blur-md transition-all duration-300 relative overflow-hidden group flex flex-col justify-between p-4.5 cursor-pointer select-none"
                   >
                     {/* Subtle top glow accent */}
                     <div
@@ -238,7 +220,7 @@ export function ProjectVault() {
                         {project.stack.map((tech) => (
                           <Badge
                             key={tech}
-                            className="px-2 py-0 border-slate-800 bg-slate-950/20 text-slate-300 text-[0.65rem] font-mono rounded"
+                            className="px-2.5 py-0.5 rounded-md border-slate-800/80 bg-slate-950/20 text-slate-300 hover:text-white hover:border-slate-700 transition-colors text-[0.7rem] font-sans"
                             variant="outline"
                           >
                             {tech}

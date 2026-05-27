@@ -118,7 +118,7 @@
   --color-sidebar-ring: var(--sidebar-ring);
 
   /* Premium Human-Designed Fonts configuration mapping for Tailwind 4 */
-  --font-sans: 'Plus Jakarta Sans', 'Outfit', sans-serif;
+  --font-sans: 'Plus Jakarta Sans', sans-serif;
   --font-heading: 'Outfit', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 }
@@ -133,32 +133,28 @@
     margin: 0;
     padding: 0;
     background: #030712;
-    font-family: 'Plus Jakarta Sans', 'Outfit', sans-serif;
-    overflow-x: hidden;
-  }
-
-  html.lenis, html.lenis body {
-    height: auto;
-  }
-
-  .lenis-smooth {
-    scroll-behavior: auto !important;
-  }
-
-  .lenis-smooth [data-lenis-prevent] {
-    overscroll-behavior: contain;
-  }
-
-  .lenis-stopped {
-    overflow: hidden;
-  }
-
-  .lenis-scrolling iframe {
-    pointer-events: none;
+    font-family: 'Plus Jakarta Sans', sans-serif;
   }
 
   html {
-    font-size: var(--font-size);
+    font-size: 13px; /* 100% standard-compliant 80% layout scaling */
+    scroll-behavior: smooth;
+    scroll-snap-type: y mandatory;
+  }
+
+  section {
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  @media (min-width: 1024px) {
+    section {
+      height: 100vh !important;
+      min-height: 100vh !important;
+      overflow: hidden !important;
+    }
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -267,5 +263,15 @@
   .section-reveal.in-view {
     opacity: 1;
     transform: none;
+  }
+
+  /* Clean premium flicker-free hover glow for tech logos */
+  .tech-logo-btn {
+    transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), filter 0.22s ease;
+    will-change: transform, filter;
+  }
+  .tech-logo-btn:hover {
+    transform: scale(1.22);
+    filter: drop-shadow(0 0 8px var(--tech-glow)) drop-shadow(0 0 20px var(--tech-glow));
   }
 }

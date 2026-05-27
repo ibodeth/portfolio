@@ -59,11 +59,36 @@ const customMetadata: Record<string, { title: string; authority: string; date: s
 const certImages = import.meta.glob("../../certificates/*.{png,jpg,jpeg,webp,svg,PNG,JPG,JPEG,WEBP,SVG}", { eager: true });
 const certMetadata = import.meta.glob("../../certificates/*.json", { eager: true });
 
+async function fetchTranslation(text: string): Promise<string> {
+  if (!text || text.trim() === "") return "";
+  try {
+    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=en&dt=t&q=${encodeURIComponent(text)}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    if (data && data[0]) {
+      return data[0].map((x: any) => x[0]).join("");
+    }
+  } catch (e) {
+    console.error("Translation error:", e);
+  }
+  return text;
+}
+
 export function CertificatesGallery() {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const [activeSlide, setActiveSlide] = useState(0);
   const [lightboxId, setLightboxId] = useState<string | null>(null);
   const [isPaused, setIsPaused] = useState(false);
+
+  const [translationsCache, setTranslationsCache] = useState<Record<string, { title: string; authority: string; description: string }>>(() => {
+    try {
+      const saved = localStorage.getItem("portfolio_translations_cache");
+      return saved ? JSON.parse(saved) : {};
+    } catch {
+      return {};
+    }
+  });
+  const [translatingIds, setTranslatingIds] = useState<Record<string, boolean>>({});
 
   // Convert the dynamic imported assets glob map into structured React certificates list inside component
   const certificates = Object.keys(certImages).map((key, index) => {
@@ -95,16 +120,103 @@ export function CertificatesGallery() {
       description: t(`cert.meta.${fileName}.description`),
     };
 
+    const originalTitle = jsonMeta?.title || (translatedMeta.title !== `cert.meta.${fileName}.title` ? translatedMeta.title : null) || customMetadata[fileName]?.title || fallbackTitle;
+    const originalAuthority = jsonMeta?.authority || (translatedMeta.authority !== `cert.meta.${fileName}.authority` ? translatedMeta.authority : null) || customMetadata[fileName]?.authority || t("cert.fallbackAuthority");
+    const originalDesc = jsonMeta?.description || (translatedMeta.description !== `cert.meta.${fileName}.description` ? translatedMeta.description : null) || customMetadata[fileName]?.description || t("cert.fallbackDesc").replace("{fileNameWithExt}", fileNameWithExt);
+
+    const isTranslating = !!translatingIds[`cert-dyn-${index}`];
+    const cached = translationsCache[`cert-dyn-${index}`];
+
     return {
       id: `cert-dyn-${index}`,
-      title: jsonMeta?.title || (translatedMeta.title !== `cert.meta.${fileName}.title` ? translatedMeta.title : null) || customMetadata[fileName]?.title || fallbackTitle,
-      authority: jsonMeta?.authority || (translatedMeta.authority !== `cert.meta.${fileName}.authority` ? translatedMeta.authority : null) || customMetadata[fileName]?.authority || t("cert.fallbackAuthority"),
+      title: (lang === "en" && cached?.title) ? cached.title : originalTitle,
+      authority: (lang === "en" && cached?.authority) ? cached.authority : originalAuthority,
       date: jsonMeta?.date || (translatedMeta.date !== `cert.meta.${fileName}.date` ? translatedMeta.date : null) || customMetadata[fileName]?.date || t("cert.fallbackDate"),
       verifyId: jsonMeta?.verifyId || customMetadata[fileName]?.verifyId || `VERIFY-ID-${index + 1045}`,
       image: imagePath,
-      description: jsonMeta?.description || (translatedMeta.description !== `cert.meta.${fileName}.description` ? translatedMeta.description : null) || customMetadata[fileName]?.description || t("cert.fallbackDesc").replace("{fileNameWithExt}", fileNameWithExt),
+      description: (lang === "en" && cached?.description) ? cached.description : originalDesc,
+      isTranslating,
+      originalData: {
+        title: originalTitle,
+        authority: originalAuthority,
+        description: originalDesc,
+      }
     };
   });
+
+  // Dynamic background translation trigger when language changes to English
+  useEffect(() => {
+    if (lang !== "en" || certificates.length === 0) return;
+
+    // Find certificates that are not yet cached and not currently translating
+    const toTranslate = certificates.filter(
+      (c) => !translationsCache[c.id] && !translatingIds[c.id]
+    );
+
+    if (toTranslate.length === 0) return;
+
+    toTranslate.forEach((cert) => {
+      const id = cert.id;
+      
+      // Determine if text contains Turkish-specific characters
+      const needsTranslation = 
+        /[çğıöşüÇĞİÖŞÜ]/.test(cert.originalData.title) || 
+        /[çğıöşüÇĞİÖŞÜ]/.test(cert.originalData.authority) || 
+        /[çğıöşüÇĞİÖŞÜ]/.test(cert.originalData.description);
+
+      if (!needsTranslation) {
+        // Cache immediately without calling API to save bandwidth
+        setTranslationsCache((prev) => {
+          const next = {
+            ...prev,
+            [id]: {
+              title: cert.originalData.title,
+              authority: cert.originalData.authority,
+              description: cert.originalData.description,
+            },
+          };
+          try {
+            localStorage.setItem("portfolio_translations_cache", JSON.stringify(next));
+          } catch {}
+          return next;
+        });
+        return;
+      }
+
+      // Mark as currently translating
+      setTranslatingIds((prev) => ({ ...prev, [id]: true }));
+
+      // Fetch translation
+      (async () => {
+        try {
+          const [tTitle, tAuth, tDesc] = await Promise.all([
+            fetchTranslation(cert.originalData.title),
+            fetchTranslation(cert.originalData.authority),
+            fetchTranslation(cert.originalData.description),
+          ]);
+
+          setTranslationsCache((prev) => {
+            const next = {
+              ...prev,
+              [id]: {
+                title: tTitle,
+                authority: tAuth,
+                description: tDesc,
+              },
+            };
+            try {
+              localStorage.setItem("portfolio_translations_cache", JSON.stringify(next));
+            } catch {}
+            return next;
+          });
+        } catch (e) {
+          console.error("Translation fail:", e);
+        } finally {
+          setTranslatingIds((prev) => ({ ...prev, [id]: false }));
+        }
+      })();
+    });
+  }, [lang, certificates.length]);
 
   // Smooth Auto-Play Slideshow timer
   useEffect(() => {
@@ -132,7 +244,7 @@ export function CertificatesGallery() {
   return (
     <section
       id="certificates"
-      className="relative py-20 sm:py-24 px-4 sm:px-6 md:px-8 bg-transparent overflow-hidden"
+      className="relative min-h-screen w-full flex flex-col justify-center py-6 lg:pt-24 lg:pb-8 px-4 sm:px-6 md:px-8 bg-transparent overflow-hidden"
     >
       <div className="max-w-7xl mx-auto w-full relative z-10">
         {/* Section Header (Dynamic folder badge removed) */}
@@ -141,7 +253,7 @@ export function CertificatesGallery() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.5 }}
-          className="mb-14 text-left"
+          className="mb-6 text-left"
         >
           <span className="text-sm font-semibold text-indigo-400 font-sans tracking-wide block mb-2 animate-pulse">
             {t("cert.badge")}
@@ -183,7 +295,9 @@ export function CertificatesGallery() {
               onMouseEnter={() => setIsPaused(true)}
               onMouseLeave={() => setIsPaused(false)}
             >
-              <div className="flex flex-col lg:flex-row gap-8 items-center bg-slate-950/20 border border-slate-900/60 rounded-2xl p-6 md:p-8 backdrop-blur-md relative min-h-[520px] lg:min-h-[380px]">
+              <div 
+                className="flex flex-col lg:flex-row gap-8 items-center bg-slate-950/35 border border-white/10 rounded-2xl p-5 md:p-6 backdrop-blur-xl shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] relative min-h-[560px] lg:min-h-[350px] transition-all duration-500 hover:-translate-y-1.5 hover:shadow-[0_20px_50px_rgba(99,102,241,0.18)]"
+              >
                 
                 {/* Symmetrical active top accent glow */}
                 <div
@@ -200,14 +314,14 @@ export function CertificatesGallery() {
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -10 }}
                     transition={{ duration: 0.35, ease: "easeInOut" }}
-                    className="flex flex-col lg:flex-row gap-8 items-center w-full"
+                    className="flex flex-col lg:flex-row gap-8 items-center w-full h-full"
                   >
                     {/* Left Column: Zoomable Image Card */}
-                    <div className="w-full lg:w-[45%] shrink-0 group relative overflow-hidden rounded-xl border border-slate-850 bg-slate-950 shadow-2xl aspect-[4/3] flex items-center justify-center">
+                    <div className="w-full lg:w-[45%] shrink-0 group relative overflow-hidden rounded-xl border border-slate-850 bg-slate-950 shadow-2xl flex items-center justify-center">
                       <img
                         src={certificates[activeSlide].image}
                         alt={certificates[activeSlide].title}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-102"
+                        className="w-full h-auto block transition-transform duration-500 group-hover:scale-102"
                       />
                       
                       {/* Image Hover overlay */}
@@ -226,9 +340,9 @@ export function CertificatesGallery() {
                     </div>
 
                     {/* Right Column: Certificate Details */}
-                    <div className="w-full lg:w-[55%] flex flex-col justify-between self-stretch py-2">
+                    <div className="w-full lg:w-[55%] flex flex-col justify-between self-stretch py-1 flex-1">
                       <div>
-                        <div className="flex items-center gap-2.5 mb-3.5">
+                        <div className="flex items-center gap-2.5 mb-2.5">
                           <div className="p-2 rounded-lg border border-indigo-500/20 bg-indigo-500/5">
                             <Award className="w-4 h-4 text-indigo-400 animate-pulse" />
                           </div>
@@ -237,30 +351,32 @@ export function CertificatesGallery() {
                           </span>
                         </div>
 
-                        <h3 className="text-slate-100 font-bold tracking-tight text-lg md:text-xl font-sans mb-3.5 leading-snug">
-                          {certificates[activeSlide].title}
+                        <h3 className={`text-slate-100 font-bold tracking-tight text-lg md:text-xl font-sans mb-2.5 leading-snug line-clamp-2 transition-all duration-300 ${certificates[activeSlide].isTranslating ? "animate-pulse opacity-50 select-none" : ""}`}>
+                          {certificates[activeSlide].isTranslating ? "Translating details..." : certificates[activeSlide].title}
                         </h3>
 
                         {certificates[activeSlide].description && (
-                          <p className="text-slate-400 text-xs md:text-sm font-sans leading-relaxed mb-6">
-                            {certificates[activeSlide].description}
-                          </p>
+                          <div className="max-h-[85px] overflow-y-auto pr-2 custom-scrollbar mb-4">
+                            <p className={`text-slate-400 text-xs md:text-sm font-sans leading-relaxed transition-all duration-300 ${certificates[activeSlide].isTranslating ? "animate-pulse opacity-40 select-none" : ""}`}>
+                              {certificates[activeSlide].isTranslating ? "Translating details into English..." : certificates[activeSlide].description}
+                            </p>
+                          </div>
                         )}
                       </div>
 
                       {/* Metadata tags */}
-                      <div className="grid grid-cols-2 gap-4 pt-5 border-t border-slate-800/40 mt-auto">
-                        <div className="space-y-1">
+                      <div className="grid grid-cols-2 gap-3 pt-3.5 border-t border-slate-800/40 mt-auto">
+                        <div className="space-y-0.5">
                           <span className="flex items-center gap-1.5 text-[0.65rem] text-slate-500 font-medium uppercase font-mono tracking-wider">
                             <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
                             {t("cert.authority")}
                           </span>
-                          <span className="block text-slate-200 text-xs font-semibold font-sans truncate">
-                            {certificates[activeSlide].authority}
+                          <span className={`block text-slate-200 text-xs font-semibold font-sans truncate transition-all duration-300 ${certificates[activeSlide].isTranslating ? "animate-pulse opacity-40 select-none" : ""}`}>
+                            {certificates[activeSlide].isTranslating ? "Translating..." : certificates[activeSlide].authority}
                           </span>
                         </div>
 
-                        <div className="space-y-1">
+                        <div className="space-y-0.5">
                           <span className="flex items-center gap-1.5 text-[0.65rem] text-slate-500 font-medium uppercase font-mono tracking-wider">
                             <Calendar className="w-3.5 h-3.5 text-indigo-400" />
                             {t("cert.date")}
@@ -270,13 +386,15 @@ export function CertificatesGallery() {
                           </span>
                         </div>
 
-                        <div className="col-span-2 space-y-1 mt-1">
-                          <span className="block text-[0.65rem] text-slate-500 font-medium uppercase font-mono tracking-wider">
-                            {t("cert.verifyId")}
-                          </span>
-                          <span className="inline-block text-[0.65rem] font-bold font-mono tracking-tight bg-slate-900 border border-slate-850 text-indigo-300 px-2 py-1 rounded">
-                            {certificates[activeSlide].verifyId}
-                          </span>
+                        <div className="col-span-2 flex items-center justify-between gap-2 mt-1">
+                          <div className="space-y-0.5">
+                            <span className="block text-[0.65rem] text-slate-500 font-medium uppercase font-mono tracking-wider">
+                              {t("cert.verifyId")}
+                            </span>
+                            <span className="inline-block text-[0.65rem] font-bold font-mono tracking-tight bg-slate-900 border border-slate-850 text-indigo-300 px-2 py-0.5 rounded">
+                              {certificates[activeSlide].verifyId}
+                            </span>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -360,15 +478,6 @@ export function CertificatesGallery() {
                   <span className="text-[0.625rem] font-bold font-mono bg-slate-900 border border-slate-850 text-slate-400 px-2 py-0.5 rounded uppercase tracking-wider">
                     {t("cert.verifyId")}: {currentLightbox.verifyId}
                   </span>
-                  
-                  <a
-                    href={currentLightbox.image}
-                    download={`${currentLightbox.title.toLowerCase().replace(/\s+/g, "_")}`}
-                    className="inline-flex items-center gap-1.5 text-[0.65rem] font-bold font-sans tracking-wide text-indigo-400 hover:text-white transition-colors cursor-pointer bg-indigo-500/10 border border-indigo-500/20 px-2.5 py-1 rounded"
-                  >
-                    <Download className="w-3.5 h-3.5" />
-                    {t("cert.download")}
-                  </a>
                 </div>
               </div>
             </motion.div>

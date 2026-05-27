@@ -22,7 +22,8 @@ const translations: Record<Language, Record<string, any>> = {
 
     // Intro Screen
     "intro.booting": "SİSTEM BAŞLATILIYOR v3.8.4",
-    "intro.bypass": "[ Başlatmak ve sesi açmak için herhangi bir yere tıklayın ]",
+    "intro.bypass": "[ Sistemi başlatmak ve sesleri açmak için butona tıklayın ]",
+    "intro.startBtn": "SİSTEMİ BAŞLAT",
 
     // Hero Section
     "hero.badge": "Sistem & Makine Öğrenmesi Mühendisi",
@@ -74,7 +75,7 @@ const translations: Record<Language, Record<string, any>> = {
     "exp.op1Title": "TEKNOSEL Yapay Zeka Film Yarışması",
     "exp.op1Role": "Takım Kaptanı @ Neural Frames",
     "exp.op1Result": "4. — Jüriden 62/100",
-    "exp.op1Badges": ["AI Video Üretimi", "Takım Liderliği", "Yaratıcı AI"],
+    "exp.op1Badges": ["Generative AI", "AI Video", "Leadership"],
     "exp.op1Details": "Konya çapında düzenlenen TEKNOSEL Yapay Zeka Film Yarışması'nda Neural Frames ekibini kurdum ve yönettim. Metinden videoya, metinden sese modellerini bir araya getirerek özgün bir sinematik hikâye anlattık. Jüri filmimize 100 üzerinden 62 puan verdi ve 4. olduk. Bu projeyi geliştirirken paha biçilemez deneyimler kazandım; yapay zekanın yaratıcı süreçlerde nasıl kullanılabileceğini, takım yönetimini ve proje teslimini öğrendim.",
     "exp.op1WatchFilm": "Filmi İzle",
 
@@ -87,7 +88,7 @@ const translations: Record<Language, Record<string, any>> = {
     "exp.op3Title": "Mağara Jam 2025 — 72 Saatte Oyun",
     "exp.op3Role": "Proje Lideri @ Koloniler Devs, Coder",
     "exp.op3Result": "Oynanabilir Strateji Oyunu Teslim Edildi",
-    "exp.op3Badges": ["Scrum", "Unity", "Hızlı Prototipleme", "Oyun Geliştirme"],
+    "exp.op3Badges": ["Scrum", "Unity", "Prototyping", "Game Dev"],
     "exp.op3Details": "Mağara Jam 2025'te sanatçılar ve programcılardan oluşan bir ekibi 72 saat boyunca yönettim. Scrum ile süreci organize ettim; görev önceliklendirme, asset teslimi, kodlama ve takım koordinasyonunu sağlayarak 'Koloniler' adlı strateji oyununu süre dolmadan bitirdik.",
 
     // Project Vault
@@ -125,6 +126,7 @@ const translations: Record<Language, Record<string, any>> = {
     "contact.title": "Bana Ulaşın",
     "contact.desc": "Bir projeniz mi var, iş birliği teklifi mi, yoksa sadece sohbet mi etmek istiyorsunuz? Mesaj atmaktan çekinmeyin.",
     "contact.academicTitle": "Eğitim",
+    "edu.desc": "Akademik yolculuğum, temel teorik eğitimim ve gelişim serüvenim.",
     "contact.neuInstitution": "Necmettin Erbakan Üniversitesi",
     "contact.neuProgram": "Yapay Zeka Operatörlüğü",
     "contact.neuPeriod": "2025 - Günümüz",
@@ -166,7 +168,8 @@ const translations: Record<Language, Record<string, any>> = {
 
     // Intro Screen
     "intro.booting": "SYSTEM BOOTING v3.8.4",
-    "intro.bypass": "[ Click anywhere to enable audio and start ]",
+    "intro.bypass": "[ Click the button to start system and enable audio ]",
+    "intro.startBtn": "START SYSTEM",
 
     // Hero Section
     "hero.badge": "Systems & Machine Learning Engineer",
@@ -218,7 +221,7 @@ const translations: Record<Language, Record<string, any>> = {
     "exp.op1Title": "TEKNOSEL AI Film Competition",
     "exp.op1Role": "Team Captain @ Neural Frames",
     "exp.op1Result": "4th Place — 62/100 from the Jury",
-    "exp.op1Badges": ["AI Video Generation", "Team Leadership", "Creative AI"],
+    "exp.op1Badges": ["Generative AI", "AI Video", "Leadership"],
     "exp.op1Details": "I founded and led the Neural Frames team at the TEKNOSEL AI Film Competition held in Konya. We combined text-to-video and text-to-audio models to tell an original cinematic story. The jury gave our film 62 out of 100, and we finished 4th. I gained invaluable experience during this project — I learned how AI can be used in creative processes, team management, and project delivery.",
     "exp.op1WatchFilm": "Watch Film",
 
@@ -231,7 +234,7 @@ const translations: Record<Language, Record<string, any>> = {
     "exp.op3Title": "Mağara Jam 2025 — Game in 72 Hours",
     "exp.op3Role": "Project Lead @ Koloniler Devs, Coder",
     "exp.op3Result": "Playable Strategy Game Delivered",
-    "exp.op3Badges": ["Scrum", "Unity", "Rapid Prototyping", "Game Development"],
+    "exp.op3Badges": ["Scrum", "Unity", "Prototyping", "Game Dev"],
     "exp.op3Details": "I managed a team of artists and programmers for 72 hours at Mağara Jam 2025. I organized the process with Scrum — handling task prioritization, asset delivery, coding, and team coordination, we finished the strategy game 'Koloniler' before the deadline.",
 
     // Project Vault
@@ -290,6 +293,7 @@ const translations: Record<Language, Record<string, any>> = {
     "contact.title": "Get in Touch",
     "contact.desc": "Got a project, a collaboration offer, or just want to chat? Don't hesitate to send a message.",
     "contact.academicTitle": "Education",
+    "edu.desc": "My academic journey, core theoretical education and development path.",
     "contact.neuInstitution": "Necmettin Erbakan University",
     "contact.neuProgram": "AI Operations",
     "contact.neuPeriod": "2025 – Present",

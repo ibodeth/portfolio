@@ -53,7 +53,7 @@ export function OperationsCanvas() {
   return (
     <section
       id="experience"
-      className="relative min-h-screen w-full flex flex-col justify-center py-20 sm:py-24 px-4 sm:px-6 md:px-8 bg-transparent"
+      className="relative min-h-screen w-full flex flex-col justify-center py-6 lg:pt-24 lg:pb-8 px-4 sm:px-6 md:px-8 bg-transparent"
     >
       <div className="max-w-4xl mx-auto w-full relative z-10">
         {/* Section Title */}
@@ -62,7 +62,7 @@ export function OperationsCanvas() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.5 }}
-          className="mb-14"
+          className="mb-6"
         >
           <span className="text-sm font-semibold text-indigo-400 font-sans tracking-wide block mb-2">
             {t("exp.badge")}
@@ -135,7 +135,7 @@ export function OperationsCanvas() {
 
                     <CardContent className="p-0">
                       <AccordionItem value={op.id} className="border-none">
-                        <AccordionTrigger onClick={playClick} className="w-full hover:no-underline px-5 py-5 text-left flex items-start justify-between gap-4 font-sans select-none outline-none">
+                        <AccordionTrigger onClick={playClick} className="w-full hover:no-underline px-5 py-4 text-left flex items-start justify-between gap-4 font-sans select-none outline-none">
                           <div className="flex-1 flex flex-col md:flex-row md:items-center justify-between gap-2">
                             <div>
                               <h3 className="text-slate-100 font-semibold tracking-tight text-[1.05rem] md:text-lg">
@@ -153,7 +153,7 @@ export function OperationsCanvas() {
                                 {op.badges.map((badge) => (
                                   <Badge
                                     key={badge}
-                                    className="px-2 py-0 border-slate-800 bg-slate-950/40 text-[0.625rem] text-slate-300 font-mono tracking-tight rounded"
+                                    className="px-2.5 py-0.5 rounded-md border-slate-800/80 bg-slate-950/20 text-slate-300 hover:text-white hover:border-slate-700 transition-colors text-[0.7rem] font-sans"
                                     variant="outline"
                                   >
                                     {badge}

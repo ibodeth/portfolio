@@ -15,7 +15,7 @@ export function BentoGrid() {
     {
       id: 1,
       title: t("skills.aiTitle"),
-      tags: [t("skills.tag.ml"), t("skills.tag.nn"), t("skills.tag.cv"), "Python"],
+      tags: ["Machine Learning", "Neural Networks", "Computer Vision", "Python"],
       icon: Eye,
       color: "#6366f1", // indigo
       visual: "ml-cluster",
@@ -23,7 +23,7 @@ export function BentoGrid() {
     {
       id: 2,
       title: t("skills.backendTitle"),
-      tags: [t("skills.tag.backend"), "Docker", "Linux", "C#"],
+      tags: ["Backend Dev", "Docker", "Linux", "C#"],
       icon: Terminal,
       color: "#a855f7", // purple
       visual: "backend-terminal",
@@ -31,7 +31,7 @@ export function BentoGrid() {
     {
       id: 3,
       title: t("skills.interactiveTitle"),
-      tags: ["Unity Engine", t("skills.tag.gamedev"), t("skills.tag.physics")],
+      tags: ["Unity Engine", "C# / Game Dev", "Physics Engines"],
       icon: Gamepad,
       color: "#3b82f6", // blue
       visual: "game-nodes",
@@ -39,7 +39,7 @@ export function BentoGrid() {
     {
       id: 4,
       title: t("skills.edgeTitle"),
-      tags: [t("skills.tag.micro"), "Raspberry Pi", "IoT", "Linux"],
+      tags: ["Microcontrollers", "Raspberry Pi", "IoT", "Linux"],
       icon: Cpu,
       color: "#ef4444", // red/coral
       visual: "circuit",
@@ -47,7 +47,7 @@ export function BentoGrid() {
     {
       id: 5,
       title: t("skills.promptTitle"),
-      tags: [t("skills.tag.llm"), "Vibe Coding", t("skills.tag.prompt"), t("skills.tag.proto")],
+      tags: ["LLM Integration", "Vibe Coding", "Prompt Design", "Rapid Prototyping"],
       icon: MessageSquareCode,
       color: "#f59e0b", // amber
       visual: "prompt-weights",
@@ -55,7 +55,7 @@ export function BentoGrid() {
     {
       id: 6,
       title: t("skills.mediaTitle"),
-      tags: [t("skills.tag.video"), t("skills.tag.nle"), t("skills.tag.frontend")],
+      tags: ["Video Editing", "NLE Workflows", "Frontend Dev"],
       icon: Video,
       color: "#10b981", // emerald
       visual: "timeline",
@@ -65,7 +65,7 @@ export function BentoGrid() {
   return (
     <section
       id="skills"
-      className="relative min-h-screen w-full flex flex-col justify-center py-20 sm:py-24 px-4 sm:px-6 md:px-8 bg-transparent overflow-hidden"
+      className="relative min-h-screen w-full flex flex-col justify-center py-6 lg:pt-24 lg:pb-8 px-4 sm:px-6 md:px-8 bg-transparent overflow-hidden"
     >
       <div className="max-w-7xl mx-auto w-full relative z-10">
         {/* Section Header */}
@@ -74,7 +74,7 @@ export function BentoGrid() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.5 }}
-          className="mb-14"
+          className="mb-6"
         >
           <span className="text-sm font-semibold text-indigo-400 font-sans tracking-wide block mb-2 animate-pulse">
             {t("skills.badge")}
@@ -109,7 +109,7 @@ export function BentoGrid() {
                 onClick={playClick}
               >
                 <Card
-                  className="h-full border border-slate-800/80 bg-slate-950/20 hover:bg-slate-900/20 hover:border-slate-700/60 backdrop-blur-md transition-all duration-300 relative overflow-hidden group cursor-pointer flex flex-col justify-between min-h-[360px]"
+                  className="h-full border border-slate-800/80 bg-slate-950/20 hover:bg-slate-900/20 hover:border-slate-700/60 backdrop-blur-md transition-all duration-300 relative overflow-hidden group cursor-pointer flex flex-col justify-between min-h-[245px]"
                   style={{
                     boxShadow: isHovered ? `0 0 25px -10px ${box.color}15` : "none",
                   }}
@@ -123,7 +123,7 @@ export function BentoGrid() {
                   />
 
                   {/* Top Header */}
-                  <CardHeader className="p-6 pb-2 relative z-10 flex flex-row items-center justify-between space-y-0">
+                  <CardHeader className="p-4.5 pb-1 relative z-10 flex flex-row items-center justify-between space-y-0">
                     <div className="flex flex-col gap-1.5">
                       <div className="flex items-center gap-3">
                         <div
@@ -145,8 +145,8 @@ export function BentoGrid() {
                   </CardHeader>
 
                   {/* Content (Badges) */}
-                  <CardContent className="p-6 pt-0 flex-1 flex flex-col justify-between relative z-10">
-                    <div className="flex flex-wrap gap-1.5 mb-6">
+                  <CardContent className="p-4.5 pt-0 flex-1 flex flex-col justify-between relative z-10">
+                    <div className="flex flex-wrap gap-1.5 mb-3.5">
                       {box.tags.map((tag) => (
                         <Badge
                           key={tag}
@@ -159,7 +159,7 @@ export function BentoGrid() {
                     </div>
 
                     {/* Standardized, premium, minimal, functional visualizations */}
-                    <div className="w-full h-28 overflow-hidden relative rounded-lg border border-slate-800/40 bg-slate-950/20 backdrop-blur-sm shadow-inner group">
+                    <div className="w-full h-24 overflow-hidden relative rounded-lg border border-slate-800/40 bg-slate-950/20 backdrop-blur-sm shadow-inner group mt-auto">
                       
                       {/* 1. Intelligence / Real Deep Neural Network Visualizer */}
                       {box.visual === "ml-cluster" && (
@@ -268,8 +268,8 @@ export function BentoGrid() {
                           </div>
 
                           <div className="text-[0.45rem] font-mono text-indigo-400 flex justify-between leading-none">
-                            <span>OPTIMIZATION: AdamW [lr=1e-4]</span>
-                            <span>{t("visual.ml.infer")}: 1.2ms</span>
+                            <span>OPTIMIZATION: ADAMW [LR=1E-4]</span>
+                            <span>INFERENCE_TIME: 1.2MS</span>
                           </div>
                         </div>
                       )}
@@ -321,8 +321,8 @@ export function BentoGrid() {
                             }} />
 
                             {/* Concentric gravity fields */}
-                            <circle cx="50%" cy="50%" r="20" stroke="#3b82f6" strokeWidth="0.5" strokeDasharray="1.5 1.5" className="absolute opacity-30" />
-                            <circle cx="50%" cy="50%" r="10" stroke="#3b82f6" strokeWidth="0.5" className="absolute opacity-20" />
+                            <div className="absolute w-10 h-10 rounded-full border border-dashed border-blue-500/20 opacity-30" />
+                            <div className="absolute w-6 h-6 rounded-full border border-blue-500/10 opacity-20" />
 
                             {/* Pathfinder Trajectory */}
                             <svg className="absolute inset-0 w-full h-full text-blue-500" viewBox="0 0 100 50">
@@ -373,7 +373,7 @@ export function BentoGrid() {
                               <div className="w-12 h-12 border border-red-500 rounded-sm" />
                             </div>
                             <div className="flex justify-between items-center text-[0.48rem] font-mono text-red-400 font-semibold leading-none">
-                              <span>{t("visual.edge.cpu")}</span>
+                              <span>RPI_5_CORE</span>
                               <span className="w-1.5 h-1.5 rounded-full bg-red-500" />
                             </div>
                             <div className="my-0.5 text-center">
@@ -390,7 +390,7 @@ export function BentoGrid() {
                           {/* 2. Labeled Board Signals & Blinking GPIO Pin grid */}
                           <div className="w-[55%] h-full pl-3 flex flex-col justify-between">
                             <span className="text-[0.55rem] font-mono text-slate-500 uppercase tracking-widest leading-none block">
-                              {t("visual.edge.header")}
+                              GPIO_HEADER_40PIN
                             </span>
                             {/* Pin Matrix Grid */}
                             <div className="grid grid-cols-10 gap-0.5 w-full my-0.5">
@@ -430,7 +430,7 @@ export function BentoGrid() {
                               })}
                             </div>
                             <div className="flex justify-between items-center text-[0.48rem] font-mono text-slate-500 leading-none">
-                              <span>SPI / UART active</span>
+                              <span>SPI_UART_ACTIVE</span>
                               <div className="flex gap-1">
                                 <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
                                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
@@ -452,7 +452,7 @@ export function BentoGrid() {
                           <div className="relative w-full h-12 bg-slate-950/60 border border-slate-900/60 rounded p-1.5 flex flex-col justify-between overflow-hidden">
                              {/* Sliders */}
                             <div className="flex items-center gap-2">
-                              <span className="text-[0.38rem] font-mono text-slate-400 w-10">{t("visual.prompt.temp")}</span>
+                              <span className="text-[0.38rem] font-mono text-slate-400 w-10">TEMP: 0.70</span>
                               <div className="flex-1 h-1 bg-slate-800 rounded relative overflow-hidden">
                                 <motion.div 
                                   className="absolute top-0 bottom-0 left-0 bg-amber-500" 
@@ -469,8 +469,8 @@ export function BentoGrid() {
                           </div>
 
                           <div className="text-[0.45rem] font-mono text-amber-400 flex justify-between leading-none">
-                            <span>{t("visual.prompt.tokens")}</span>
-                            <span>SYSTEM_PROMPT: 98.4% weight</span>
+                            <span>TOKENS_SPEED: 110/S</span>
+                            <span>SYSTEM_PROMPT_WEIGHT: 98.4%</span>
                           </div>
                         </div>
                       )}
@@ -514,8 +514,8 @@ export function BentoGrid() {
                           </div>
 
                           <div className="text-[0.45rem] font-mono text-emerald-400 flex justify-between leading-none">
-                            <span>{t("visual.media.speed")}</span>
-                            <span>HTML5 / TAILWIND</span>
+                            <span>PLAYBACK_SPEED: 2.4X</span>
+                            <span>HTML5_TAILWIND_NATIVE</span>
                           </div>
                         </div>
                       )}

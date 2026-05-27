@@ -25,16 +25,23 @@
     <meta name="twitter:title" content="İbrahim Nuryağınlı | Systems & ML Engineer" />
     <meta name="twitter:description" content="AI, embedded systems, and high-performance software engineering portfolio." />
     
-    <!-- Google Typography Fonts (Outfit for Headers, Inter for Body, JetBrains Mono for Technical details) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Outfit:wght@100..900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet">
- 
+    <!-- High-Performance Locally Served Fonts -->
+    <link rel="stylesheet" href="/fonts/fonts.css" />
+    <!-- Prevent initial load auto-scrolling jumps and restore states instantly -->
+    <script>
+      if ("scrollRestoration" in history) {
+        history.scrollRestoration = "manual";
+      }
+      // Force scroll reset to top immediately on hard reload
+      window.scrollTo(0, 0);
+    </script>
     <style>
+      html {
+        scroll-behavior: auto !important; /* disabled during load */
+      }
       html, body { 
         min-height: 100%; 
         margin: 0; 
-        scroll-behavior: auto;
         background-color: #030712;
         font-family: 'Plus Jakarta Sans', sans-serif;
       } 

@@ -50,6 +50,30 @@ export const NeonBackground = memo(function NeonBackground() {
         .neon-float-2 { animation: neon-float-2 12s ease-in-out infinite; }
         .neon-float-3 { animation: neon-float-3 11s ease-in-out infinite; }
         .neon-float-4 { animation: neon-float-4 13s ease-in-out infinite; }
+
+        /* Claude Mascot Eyes Expressions Keyframes (10s Cycle) */
+        @keyframes claude-eye-normal-anim {
+          0%, 40%, 55%, 80%, 96%, 100% { opacity: 1; }
+          41%, 54.99%, 81%, 95.99% { opacity: 0; }
+        }
+        @keyframes claude-eye-happy-anim {
+          0%, 40.99%, 55.01%, 100% { opacity: 0; }
+          41%, 55% { opacity: 1; }
+        }
+        @keyframes claude-eye-wink-anim {
+          0%, 80.99%, 96.01%, 100% { opacity: 0; }
+          81%, 96% { opacity: 1; }
+        }
+
+        .claude-eye-normal {
+          animation: claude-eye-normal-anim 10s step-end infinite;
+        }
+        .claude-eye-happy {
+          animation: claude-eye-happy-anim 10s step-end infinite;
+        }
+        .claude-eye-wink {
+          animation: claude-eye-wink-anim 10s step-end infinite;
+        }
       `}</style>
 
       {/* 1. Python Snake Sign (Left Top - Hero) */}
@@ -113,39 +137,9 @@ export const NeonBackground = memo(function NeonBackground() {
         </svg>
       </div>
 
-      {/* 3. Unity Coordinate Sign (Right Middle - Skills) */}
+      {/* 3. Docker Whale Sign (Right Middle - Skills) - formerly Unity coordinate */}
       <div
         className="absolute right-[1%] md:right-[4%] top-[105vh] md:top-[110vh] w-[140px] h-[140px] sm:w-[200px] sm:h-[200px] md:w-[260px] md:h-[260px] lg:w-[310px] lg:h-[310px] opacity-[0.38] neon-float-3"
-        style={{
-          willChange: "transform",
-          contain: "layout style paint",
-          contentVisibility: "auto",
-          containIntrinsicSize: "310px",
-        }}
-      >
-        <svg className="w-full h-full neon-sign-board" viewBox="0 0 100 100" fill="none">
-          {/* Outer Layer: Wide Soft Glow */}
-          <path stroke="#3b82f6" strokeWidth="16" opacity="0.05" d="M 50 44 L 50 18 M 47 48 L 22 63 M 53 48 L 78 63" />
-          <circle cx="50" cy="46" r="14" stroke="#3b82f6" strokeWidth="12" opacity="0.05" />
-
-          {/* Middle Layer: Intense Inner Glow */}
-          <path stroke="#3b82f6" strokeWidth="8" opacity="0.20" d="M 50 44 L 50 18 M 47 48 L 22 63 M 53 48 L 78 63" />
-          <circle cx="50" cy="46" r="14" stroke="#3b82f6" strokeWidth="5" opacity="0.20" />
-
-          {/* Cam Tube Layer: Glass Core Color */}
-          <path stroke="#93c5fd" strokeWidth="2.5" opacity="0.85" className="neon-glass-tube" d="M 50 44 L 50 18 M 46 25 L 50 18 L 54 25" />
-          <path stroke="#93c5fd" strokeWidth="2.5" opacity="0.85" className="neon-glass-tube" d="M 47 48 L 22 63 M 31 62 L 22 63 L 24 54" />
-          <path stroke="#93c5fd" strokeWidth="2.5" opacity="0.85" className="neon-glass-tube" d="M 53 48 L 78 63 M 76 54 L 78 63 L 69 62" />
-          <circle cx="50" cy="46" r="3.2" fill="#ffffff" stroke="#3b82f6" strokeWidth="1.5" className="neon-flicker-hum" />
-
-          {/* White Hot Core Layer */}
-          <path stroke="#ffffff" strokeWidth="1.2" opacity="0.95" d="M 50 44 L 50 18 M 47 48 L 22 63 M 53 48 L 78 63" />
-        </svg>
-      </div>
-
-      {/* 4. Docker Whale Sign (Left Middle - Experience) */}
-      <div
-        className="absolute left-[1%] md:left-[3%] top-[205vh] md:top-[210vh] w-[150px] h-[150px] sm:w-[210px] sm:h-[210px] md:w-[270px] md:h-[270px] lg:w-[330px] lg:h-[330px] opacity-[0.38] neon-float-4"
         style={{
           willChange: "transform",
           contain: "layout style paint",
@@ -185,6 +179,65 @@ export const NeonBackground = memo(function NeonBackground() {
           <rect x="44" y="26" width="10" height="9" rx="1.2" stroke="#ffffff" strokeWidth="0.8" opacity="0.95" />
           <rect x="57" y="26" width="10" height="9" rx="1.2" stroke="#ffffff" strokeWidth="0.8" opacity="0.95" />
           <rect x="44" y="14" width="10" height="9" rx="1.2" stroke="#ffffff" strokeWidth="0.8" opacity="0.95" />
+        </svg>
+      </div>
+
+      {/* 4. Claude Code Mascot Sign (Left Middle - Experience) - formerly Docker */}
+      <div
+        className="absolute left-[1%] md:left-[3%] top-[205vh] md:top-[210vh] w-[140px] h-[140px] sm:w-[200px] sm:h-[200px] md:w-[260px] md:h-[260px] lg:w-[310px] lg:h-[310px] opacity-[0.38] neon-float-4"
+        style={{
+          willChange: "transform",
+          contain: "layout style paint",
+          contentVisibility: "auto",
+          containIntrinsicSize: "310px",
+        }}
+      >
+        <svg className="w-full h-full neon-sign-board" viewBox="0 0 100 100" fill="none">
+          {/* Outer Layer: Wide Soft Glow */}
+          <path stroke="#e06c53" strokeWidth="16" opacity="0.05" className="neon-glass-tube" d="M 24 20 L 76 20 L 76 45 L 86 45 L 86 55 L 76 55 L 76 65 L 24 65 L 24 55 L 14 55 L 14 45 L 24 45 Z" />
+          <path stroke="#e06c53" strokeWidth="16" opacity="0.05" className="neon-glass-tube" d="M 30 65 L 30 78 M 40 65 L 40 78 M 60 65 L 60 78 M 70 65 L 70 78" />
+
+          {/* Middle Layer: Intense Inner Glow */}
+          <path stroke="#e06c53" strokeWidth="8" opacity="0.20" className="neon-glass-tube" d="M 24 20 L 76 20 L 76 45 L 86 45 L 86 55 L 76 55 L 76 65 L 24 65 L 24 55 L 14 55 L 14 45 L 24 45 Z" />
+          <path stroke="#e06c53" strokeWidth="8" opacity="0.20" className="neon-glass-tube" d="M 30 65 L 30 78 M 40 65 L 40 78 M 60 65 L 60 78 M 70 65 L 70 78" />
+
+          {/* Cam Tube Layer: Glass Core Color */}
+          <path stroke="#fb923c" strokeWidth="2.8" opacity="0.85" className="neon-glass-tube" d="M 24 20 L 76 20 L 76 45 L 86 45 L 86 55 L 76 55 L 76 65 L 24 65 L 24 55 L 14 55 L 14 45 L 24 45 Z" />
+          <path stroke="#fb923c" strokeWidth="2.8" opacity="0.85" className="neon-glass-tube" d="M 30 65 L 30 78 M 40 65 L 40 78 M 60 65 L 60 78 M 70 65 L 70 78" />
+
+          {/* Left Normal Eye */}
+          <rect x="33" y="32" width="5" height="11" rx="1.5" stroke="#e06c53" strokeWidth="6" opacity="0.05" className="claude-eye-normal" />
+          <rect x="33" y="32" width="5" height="11" rx="1.5" stroke="#e06c53" strokeWidth="3" opacity="0.20" className="claude-eye-normal" />
+          <rect x="33" y="32" width="5" height="11" rx="1.5" fill="#ffffff" stroke="#fb923c" strokeWidth="1.2" opacity="0.9" className="claude-eye-normal neon-flicker-hum" />
+          
+          {/* Right Normal Eye */}
+          <rect x="62" y="32" width="5" height="11" rx="1.5" stroke="#e06c53" strokeWidth="6" opacity="0.05" className="claude-eye-normal" />
+          <rect x="62" y="32" width="5" height="11" rx="1.5" stroke="#e06c53" strokeWidth="3" opacity="0.20" className="claude-eye-normal" />
+          <rect x="62" y="32" width="5" height="11" rx="1.5" fill="#ffffff" stroke="#fb923c" strokeWidth="1.2" opacity="0.9" className="claude-eye-normal neon-flicker-hum" />
+
+          {/* Left Happy Eye */}
+          <path d="M 30 39 Q 35.5 31.5 41 39" stroke="#e06c53" strokeWidth="8" opacity="0.05" className="claude-eye-happy" />
+          <path d="M 30 39 Q 35.5 31.5 41 39" stroke="#e06c53" strokeWidth="4" opacity="0.20" className="claude-eye-happy" />
+          <path d="M 30 39 Q 35.5 31.5 41 39" stroke="#ffffff" strokeWidth="1.8" opacity="0.95" className="claude-eye-happy neon-flicker-hum" />
+
+          {/* Right Happy Eye */}
+          <path d="M 59 39 Q 64.5 31.5 70 39" stroke="#e06c53" strokeWidth="8" opacity="0.05" className="claude-eye-happy" />
+          <path d="M 59 39 Q 64.5 31.5 70 39" stroke="#e06c53" strokeWidth="4" opacity="0.20" className="claude-eye-happy" />
+          <path d="M 59 39 Q 64.5 31.5 70 39" stroke="#ffffff" strokeWidth="1.8" opacity="0.95" className="claude-eye-happy neon-flicker-hum" />
+
+          {/* Left Wink Eye (Normal open) */}
+          <rect x="33" y="32" width="5" height="11" rx="1.5" stroke="#e06c53" strokeWidth="6" opacity="0.05" className="claude-eye-wink" />
+          <rect x="33" y="32" width="5" height="11" rx="1.5" stroke="#e06c53" strokeWidth="3" opacity="0.20" className="claude-eye-wink" />
+          <rect x="33" y="32" width="5" height="11" rx="1.5" fill="#ffffff" stroke="#fb923c" strokeWidth="1.2" opacity="0.9" className="claude-eye-wink neon-flicker-hum" />
+
+          {/* Right Wink Eye (Flat closed line) */}
+          <path d="M 59 37 L 70 37" stroke="#e06c53" strokeWidth="8" opacity="0.05" className="claude-eye-wink" />
+          <path d="M 59 37 L 70 37" stroke="#e06c53" strokeWidth="4" opacity="0.20" className="claude-eye-wink" />
+          <path d="M 59 37 L 70 37" stroke="#ffffff" strokeWidth="1.8" opacity="0.95" className="claude-eye-wink neon-flicker-hum" />
+
+          {/* White Hot Core Layer */}
+          <path stroke="#ffffff" strokeWidth="1.2" opacity="0.95" className="neon-glass-tube" d="M 24 20 L 76 20 L 76 45 L 86 45 L 86 55 L 76 55 L 76 65 L 24 65 L 24 55 L 14 55 L 14 45 L 24 45 Z" />
+          <path stroke="#ffffff" strokeWidth="1.2" opacity="0.95" className="neon-glass-tube" d="M 30 65 L 30 78 M 40 65 L 40 78 M 60 65 L 60 78 M 70 65 L 70 78" />
         </svg>
       </div>
 

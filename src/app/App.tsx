@@ -1,6 +1,7 @@
 import { Header } from "./components/Header";
 import { HeroSection } from "./components/HeroSection";
 import { BentoGrid } from "./components/BentoGrid";
+import { EducationSection } from "./components/EducationSection";
 import { OperationsCanvas } from "./components/OperationsCanvas";
 import { ProjectVault } from "./components/ProjectVault";
 import { CertificatesGallery } from "./components/CertificatesGallery";
@@ -10,7 +11,6 @@ import { NeonBackground } from "./components/NeonBackground";
 import { Toaster } from "sonner";
 import { motion, AnimatePresence } from "motion/react";
 import { useEffect, useRef, useState } from "react";
-import Lenis from "@studio-freight/lenis";
 import { useLanguage } from "./context/LanguageContext";
 
 // =========================================================================
@@ -160,10 +160,22 @@ function IntroScreen({ onComplete }: { onComplete: () => void }) {
   const [text, setText] = useState("");
   const [started, setStarted] = useState(false);
   const fullName = "İbrahim Nuryağınlı";
-  
+
+  // Eager window level interactions to unlock AudioContext
   useEffect(() => {
-    const timer = setTimeout(() => setStarted(true), 500);
-    return () => clearTimeout(timer);
+    const handleEarlyUnlock = () => {
+      getAudioCtx()?.resume().catch(() => {});
+    };
+    window.addEventListener("click", handleEarlyUnlock);
+    window.addEventListener("touchstart", handleEarlyUnlock);
+    window.addEventListener("mousedown", handleEarlyUnlock);
+    window.addEventListener("keydown", handleEarlyUnlock);
+    return () => {
+      window.removeEventListener("click", handleEarlyUnlock);
+      window.removeEventListener("touchstart", handleEarlyUnlock);
+      window.removeEventListener("mousedown", handleEarlyUnlock);
+      window.removeEventListener("keydown", handleEarlyUnlock);
+    };
   }, []);
 
   useEffect(() => {
@@ -183,38 +195,75 @@ function IntroScreen({ onComplete }: { onComplete: () => void }) {
     return () => clearInterval(interval);
   }, [started, onComplete]);
 
+  const handleStart = (e?: React.MouseEvent) => {
+    if (e) {
+      e.stopPropagation();
+    }
+    const ctx = getAudioCtx();
+    if (ctx) {
+      ctx.resume().then(() => {
+        // Play an immediate UI click sound to confirm audio works
+        _playClickImpl();
+        // Give it 100ms to stabilize and start typing
+        setTimeout(() => {
+          setStarted(true);
+        }, 100);
+      }).catch(() => {
+        setStarted(true);
+      });
+    } else {
+      setStarted(true);
+    }
+  };
+
   return (
     <motion.div
       initial={{ opacity: 1 }}
       exit={{ opacity: 0, scale: 1.03 }}
       transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-      className="fixed inset-0 w-full h-full bg-[#030712] z-[999] flex flex-col items-center justify-center select-none cursor-pointer"
-      onClick={() => {
-        getAudioCtx()?.resume().catch(() => {});
-        if (!started) setStarted(true);
-      }}
+      className="fixed inset-0 w-full h-full bg-[#030712] z-[9999] flex flex-col items-center justify-center select-none"
     >
       {/* Subtle CRT scanning line overlay */}
       <div className="absolute inset-0 opacity-[0.015] pointer-events-none bg-[linear-gradient(to_bottom,rgba(255,255,255,0.1)_50%,transparent_50%)] bg-[length:100%_4px]" />
       
-      <div className="flex flex-col items-start gap-4 max-w-md w-full px-8">
-        <div className="flex items-center gap-2 text-[0.6rem] font-mono tracking-widest text-slate-500 uppercase">
+      {/* Sleek futuristic system status bar absolutely positioned at the top — only visible when typing/started */}
+      {started && (
+        <div className="absolute top-[12vh] flex items-center gap-2 text-[0.65rem] font-mono tracking-widest text-slate-500 uppercase">
           <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-ping" />
           <span>{t("intro.booting")}</span>
         </div>
-        
-        <div className="flex items-center text-white font-bold tracking-tight font-sans text-2xl md:text-3xl min-h-[40px]">
-          <span>{text}</span>
-          <motion.span 
-            animate={{ opacity: [1, 0, 1] }}
-            transition={{ duration: 0.8, repeat: Infinity, ease: "steps(2)" }}
-            className="inline-block w-2.5 h-7 ml-1 bg-indigo-500 shadow-[0_0_8px_#6366f1]"
-          />
-        </div>
+      )}
 
-        {!started && (
-          <div className="text-[0.55rem] font-mono text-indigo-400/80 animate-pulse mt-2 uppercase tracking-wider">
-            {t("intro.bypass")}
+      {/* Main content centered exactly in the middle of the viewport */}
+      <div className="flex flex-col items-center justify-center max-w-lg w-full px-8 text-center min-h-[160px]">
+        {started ? (
+          <div className="flex items-center text-white font-bold tracking-tight font-sans text-2.5xl md:text-4xl">
+            <span>{text}</span>
+            <motion.span 
+              animate={{ opacity: [1, 0, 1] }}
+              transition={{ duration: 0.8, repeat: Infinity, ease: "steps(2)" }}
+              className="inline-block w-2.5 h-8 ml-1.5 bg-indigo-500 shadow-[0_0_8px_#6366f1]"
+            />
+          </div>
+        ) : (
+          <div className="flex flex-col items-center">
+            <motion.button
+              onClick={handleStart}
+              initial={{ opacity: 0, scale: 0.6, filter: "blur(12px)" }}
+              animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+              transition={{ 
+                duration: 0.9, 
+                ease: [0.16, 1, 0.3, 1],
+                delay: 0.1 
+              }}
+              whileHover={{ scale: 1.05, boxShadow: "0 0 25px rgba(99, 102, 241, 0.45)" }}
+              whileTap={{ scale: 0.98 }}
+              className="relative px-9 py-4 rounded-xl border border-indigo-500/50 bg-indigo-950/20 text-indigo-200 hover:text-white font-sans font-bold text-sm tracking-widest uppercase cursor-pointer backdrop-blur-md transition-all duration-300 shadow-[0_0_15px_-5px_rgba(99,102,241,0.3)] group overflow-hidden"
+            >
+              {/* Inner glowing hover line */}
+              <div className="absolute inset-x-0 top-0 h-[1.5px] bg-gradient-to-r from-transparent via-indigo-400 to-transparent opacity-50 group-hover:opacity-100 transition-opacity" />
+              <span>{t("intro.startBtn")}</span>
+            </motion.button>
           </div>
         )}
       </div>
@@ -222,41 +271,56 @@ function IntroScreen({ onComplete }: { onComplete: () => void }) {
   );
 }
 
-// =========================================================================
-// 🚀 PRINCIPAL PORTFOLIO APPLICATION CORE
-// =========================================================================
-export default function App() {
-  const [isIntroActive, setIsIntroActive] = useState(true);
-  const lenisRef = useRef<Lenis | null>(null);
+if (typeof window !== "undefined" && "history" in window && "scrollRestoration" in window.history) {
+  try {
+    window.history.scrollRestoration = "manual";
+  } catch {}
+}
+
+export function PortfolioLayout() {
   const spotlightRef = useRef<HTMLDivElement>(null);
 
-  // ─── Lenis smooth scroll (initializes after intro completes) ───────────
   useEffect(() => {
-    if (isIntroActive) return; // don't start until portfolio is visible
-    const lenis = new Lenis({
-      duration: 1.15,
-      easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // expo out
-      orientation: "vertical",
-      smoothWheel: true,
-      touchMultiplier: 1.5,
-    });
-    lenisRef.current = lenis;
-
-    let rafId = 0;
-    const tick = (time: number) => {
-      lenis.raf(time);
-      rafId = requestAnimationFrame(tick);
+    const htmlEl = document.documentElement;
+    
+    // Temporarily turn off scroll snapping to allow clean programmatic scrollTo
+    htmlEl.style.scrollSnapType = "none";
+    
+    const resetScroll = () => {
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
     };
-    rafId = requestAnimationFrame(tick);
-
+    
+    // Clear hash instantly if present to prevent browser native snap jumping
+    if (window.location.hash) {
+      window.history.replaceState(null, "", window.location.pathname);
+    }
+    
+    // Run immediately
+    resetScroll();
+    
+    // Run with multiple delayed ticks to bypass late layout engine calculations
+    const t1 = setTimeout(resetScroll, 50);
+    const t2 = setTimeout(resetScroll, 150);
+    const t3 = setTimeout(resetScroll, 350);
+    const t4 = setTimeout(resetScroll, 600);
+    
+    // Re-enable snapping once page is successfully settled at y = 0 and fully faded in
+    const t5 = setTimeout(() => {
+      resetScroll();
+      htmlEl.style.scrollSnapType = ""; // Revert to stylesheet ruleset (y mandatory)
+    }, 1000);
+    
     return () => {
-      lenis.destroy();
-      lenisRef.current = null;
-      if (rafId !== 0) {
-        cancelAnimationFrame(rafId);
-      }
+      clearTimeout(t1);
+      clearTimeout(t2);
+      clearTimeout(t3);
+      clearTimeout(t4);
+      clearTimeout(t5);
+      htmlEl.style.scrollSnapType = "";
     };
-  }, [isIntroActive]);
+  }, []);
 
   useEffect(() => {
     let currentX = -1000;
@@ -338,66 +402,75 @@ export default function App() {
   }, []);
 
   return (
-    <div className="bg-[#030712] text-slate-100 min-h-screen selection:bg-indigo-500/30 selection:text-white overflow-x-hidden antialiased relative">
+    <motion.div
+      key="portfolio-content"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 1, ease: "easeOut" }}
+    >
+      {/* 1. SPECTACULAR VIBRANT AURORA BACKGROUND MESH (Static CSS Multi-Radial-Gradient, 0% GPU load) */}
+      <div 
+        className="fixed inset-0 overflow-hidden pointer-events-none z-0"
+        style={{
+          background: `
+            radial-gradient(circle at 10% 10%, rgba(79, 70, 229, 0.08) 0%, transparent 65%),
+            radial-gradient(circle at 90% 90%, rgba(147, 51, 234, 0.08) 0%, transparent 65%),
+            radial-gradient(circle at 85% 30%, rgba(16, 185, 129, 0.06) 0%, transparent 50%),
+            radial-gradient(circle at 15% 70%, rgba(59, 130, 246, 0.07) 0%, transparent 55%),
+            radial-gradient(circle at 50% 90%, rgba(245, 158, 11, 0.05) 0%, transparent 45%)
+          `
+        }}
+      />
+
+      {/* 2. HIGH-TECH INTERACTIVE NEURAL PARTICLE NETWORK */}
+      <ParticleNetwork />
+
+      {/* 2.5 JAW-DROPPING HIGH-FIDELITY BACK-AND-FORTH CURRENT COMMERCIAL NEON BACKGROUNDS */}
+      <NeonBackground />
+
+      {/* 3. INTERACTIVE CURSOR SPOTLIGHT TRACKER (900x900 static radial-gradient, moved via GPU translate3d) */}
+      <div
+        ref={spotlightRef}
+        className="pointer-events-none fixed w-[900px] h-[900px] rounded-full z-10"
+        style={{
+          opacity: 0,
+          left: 0,
+          top: 0,
+          background: "radial-gradient(circle, rgba(139, 92, 246, 0.07) 0%, transparent 70%)",
+          willChange: "transform",
+          transform: "translate3d(-1000px, -1000px, 0)",
+          transition: "opacity 0.5s",
+        }}
+      />
+
+      {/* Main Content Layout */}
+      <div className="relative z-20">
+        <Header />
+        <main className="relative">
+          <HeroSection />
+          <BentoGrid />
+          <EducationSection />
+          <OperationsCanvas />
+          <ProjectVault />
+          <CertificatesGallery />
+          <ContactGateway />
+        </main>
+      </div>
+    </motion.div>
+  );
+}
+
+export default function App() {
+  const [isIntroActive, setIsIntroActive] = useState(true);
+
+  return (
+    <div className="bg-[#030712] text-slate-100 min-h-screen selection:bg-indigo-500/30 selection:text-white antialiased relative">
       
       <AnimatePresence mode="wait">
         {isIntroActive ? (
           <IntroScreen key="intro-loader" onComplete={() => setIsIntroActive(false)} />
         ) : (
-          <motion.div
-            key="portfolio-content"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1, ease: "easeOut" }}
-          >
-            {/* 1. SPECTACULAR VIBRANT AURORA BACKGROUND MESH (Static CSS Multi-Radial-Gradient, 0% GPU load) */}
-            <div 
-              className="fixed inset-0 overflow-hidden pointer-events-none z-0"
-              style={{
-                background: `
-                  radial-gradient(circle at 10% 10%, rgba(79, 70, 229, 0.08) 0%, transparent 65%),
-                  radial-gradient(circle at 90% 90%, rgba(147, 51, 234, 0.08) 0%, transparent 65%),
-                  radial-gradient(circle at 85% 30%, rgba(16, 185, 129, 0.06) 0%, transparent 50%),
-                  radial-gradient(circle at 15% 70%, rgba(59, 130, 246, 0.07) 0%, transparent 55%),
-                  radial-gradient(circle at 50% 90%, rgba(245, 158, 11, 0.05) 0%, transparent 45%)
-                `
-              }}
-            />
-
-            {/* 2. HIGH-TECH INTERACTIVE NEURAL PARTICLE NETWORK */}
-            <ParticleNetwork />
-
-            {/* 2.5 JAW-DROPPING HIGH-FIDELITY BACK-AND-FORTH CURRENT COMMERCIAL NEON BACKGROUNDS */}
-            <NeonBackground />
-
-            {/* 3. INTERACTIVE CURSOR SPOTLIGHT TRACKER (900x900 static radial-gradient, moved via GPU translate3d) */}
-            <div
-              ref={spotlightRef}
-              className="pointer-events-none fixed w-[900px] h-[900px] rounded-full z-10"
-              style={{
-                opacity: 0,
-                left: 0,
-                top: 0,
-                background: "radial-gradient(circle, rgba(139, 92, 246, 0.07) 0%, transparent 70%)",
-                willChange: "transform",
-                transform: "translate3d(-1000px, -1000px, 0)",
-                transition: "opacity 0.5s",
-              }}
-            />
-
-            {/* Main Content Layout */}
-            <div className="relative z-20" style={{ zoom: 0.85 }}>
-              <Header />
-              <main className="relative">
-                <HeroSection />
-                <BentoGrid />
-                <OperationsCanvas />
-                <ProjectVault />
-                <CertificatesGallery />
-                <ContactGateway />
-              </main>
-            </div>
-          </motion.div>
+          <PortfolioLayout key="portfolio-layout" />
         )}
       </AnimatePresence>
 

@@ -126,15 +126,15 @@ export function HeroSection() {
   return (
     <section
       id="home"
-      className="relative w-full flex flex-col justify-center items-center overflow-hidden pt-20 pb-16 px-4 sm:px-6 md:px-8 bg-transparent"
-      style={{ minHeight: "calc(100vh / 0.85)" }}
+      className="relative w-full h-screen flex flex-col justify-center items-center overflow-hidden px-4 sm:px-6 md:px-8 bg-transparent"
+      style={{ minHeight: "100vh" }}
     >
-      {/* Content wrapper */}
+      {/* Content wrapper - Perfectly centered vertically and horizontally */}
       <motion.div
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        className="relative z-20 flex flex-col items-center gap-6 text-center max-w-3xl"
+        className="relative z-20 flex flex-col items-center gap-5 text-center max-w-3xl"
       >
         {/* Modern minimal pill badge */}
         <motion.div
@@ -199,47 +199,40 @@ export function HeroSection() {
             <ArrowUpRight className="ml-2 w-4 h-4 text-slate-400 group-hover:text-white" />
           </Button>
         </motion.div>
+      </motion.div>
 
-        {/* JAW-DROPPING GLOWING NEON TECH LOGO SPOTLIGHT */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.5 }}
-          className="w-full max-w-2xl mt-12 pt-8 border-t border-slate-800/40"
-        >
-          <p className="text-[0.65rem] font-bold tracking-widest text-slate-500 uppercase font-mono mb-6">
-            {t("hero.techHeading")}
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-4">
-            {techLogos.map((tech) => (
-              <div key={tech.name} className="relative group">
-                {/* Tooltip */}
-                <div className="absolute bottom-full mb-2.5 left-1/2 -translate-x-1/2 px-2.5 py-1 rounded bg-slate-950/90 border border-slate-800 text-[0.68rem] font-semibold tracking-wide font-sans text-slate-200 pointer-events-none opacity-0 scale-90 group-hover:opacity-100 group-hover:scale-100 transition-all duration-200 ease-out shadow-xl whitespace-nowrap z-50 backdrop-blur-sm">
-                  {tech.name}
-                  <div className="absolute top-full left-1/2 -translate-x-1/2 border-x-4 border-x-transparent border-t-4 border-t-slate-950" />
-                </div>
-
-                <motion.div
-                  initial={false}
-                  whileHover={{
-                    scale: 1.22,
-                    filter: `drop-shadow(0 0 8px ${tech.shadowColor}) drop-shadow(0 0 18px ${tech.shadowColor}) drop-shadow(0 0 32px ${tech.shadowColor})`,
-                  }}
-                  transition={{ duration: 0.18 }}
-                  onClick={() => { playClick(); window.open(tech.url, "_blank", "noopener,noreferrer"); }}
-                  className="flex items-center justify-center p-2.5 sm:p-3 cursor-pointer"
-                  style={{
-                    color: tech.color,
-                    filter: "none",
-                    transition: "filter 0.25s ease",
-                  }}
-                >
-                  {tech.svg}
-                </motion.div>
+      {/* JAW-DROPPING GLOWING NEON TECH LOGO SPOTLIGHT - Positioned absolutely at the bottom */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3, duration: 0.5 }}
+        className="absolute bottom-20 left-1/2 -translate-x-1/2 w-full max-w-2xl px-4 flex flex-col items-center border-t border-slate-800/20 pt-4 z-20"
+      >
+        <p className="text-[0.6rem] font-bold tracking-widest text-slate-500 uppercase font-mono mb-3 text-center">
+          {t("hero.techHeading")}
+        </p>
+        <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-4">
+          {techLogos.map((tech) => (
+            <div key={tech.name} className="relative group">
+              {/* Tooltip */}
+              <div className="absolute bottom-full mb-2.5 left-1/2 -translate-x-1/2 px-2.5 py-1 rounded bg-slate-950/90 border border-slate-800 text-[0.68rem] font-semibold tracking-wide font-sans text-slate-200 pointer-events-none opacity-0 scale-90 group-hover:opacity-100 group-hover:scale-100 transition-all duration-200 ease-out shadow-xl whitespace-nowrap z-50 backdrop-blur-sm">
+                {tech.name}
+                <div className="absolute top-full left-1/2 -translate-x-1/2 border-x-4 border-x-transparent border-t-4 border-t-slate-950" />
               </div>
-            ))}
-          </div>
-        </motion.div>
+
+              <div
+                onClick={() => { playClick(); window.open(tech.url, "_blank", "noopener,noreferrer"); }}
+                className="flex items-center justify-center p-2.5 sm:p-3 cursor-pointer tech-logo-btn"
+                style={{
+                  color: tech.color,
+                  ["--tech-glow" as any]: tech.shadowColor,
+                }}
+              >
+                {tech.svg}
+              </div>
+            </div>
+          ))}
+        </div>
       </motion.div>
 
       {/* Clean down arrow indicator */}
@@ -247,7 +240,7 @@ export function HeroSection() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 0.5 }}
         transition={{ delay: 0.6, duration: 0.4 }}
-        className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 cursor-pointer hover:opacity-80 transition-opacity"
+        className="absolute bottom-5 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 cursor-pointer hover:opacity-80 transition-opacity z-20"
         onClick={() => { playClick(); scrollToSection("skills"); }}
       >
         <span className="text-slate-500 text-[0.625rem] tracking-widest uppercase font-sans font-semibold">
