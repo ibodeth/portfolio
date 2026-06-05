@@ -328,12 +328,12 @@ const translations: Record<Language, Record<string, any>> = {
 
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [lang, setLangInternal] = useState<Language>(() => {
-    // Default is Turkish as per request
+    // Default is English
     if (typeof window !== "undefined") {
       const stored = localStorage.getItem("portfolio_lang") as Language;
       if (stored === "tr" || stored === "en") return stored;
     }
-    return "tr";
+    return "en";
   });
 
   const setLang = (newLang: Language) => {
