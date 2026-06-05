@@ -1,45 +1,34 @@
-# Personal Portfolio & Terminal Resume
+# Developer Portfolio & Terminal Resume
 
-A high-performance, dark-themed developer portfolio and interactive terminal resume designed for showcasing engineering experience, system architecture projects, and machine learning skill maps.
-
-## Key Features
-
-- **Interactive System Shell Booting:** Immersive startup animation and sound effects simulating retro command-line boots.
-- **Bento Grid Skill Visualizer:** Interactive cards plotting machine learning, backend/systems, embedded edge, and media competency areas.
-- **Dynamic Experience Canvas:** Operational timeline detailing past roles, team leadership, and competitive engineering results.
-- **Fully Responsive:** TailwindCSS grid structures optimized across mobile, tablet, and desktop viewports.
+This is my personal website and portfolio. It contains a retro-themed interactive system shell startup boot animation and visual bento-grid components to display my tech stack, projects, and work timeline.
 
 ## Tech Stack
-
-- **Core:** React 18, Vite, TypeScript
-- **Styling:** Vanilla TailwindCSS
-- **Animations:** CSS Keyframes & Web Audio APIs
+- **Frontend:** React 18, Vite, TypeScript
+- **Styling:** Tailwind CSS
+- **Audio/Animation:** CSS Keyframes & HTML5 Web Audio API
 
 ## Prerequisites
-
 - Node.js (v18 or higher)
 - Docker & Docker Compose (optional)
 
 ## Quick Start (Docker)
-
-Spin up the containerized production environment:
-
+Build and run the web app in a container:
 ```bash
 docker compose up -d --build
 ```
-
-Access the portfolio at `http://localhost:8080`.
+The site will be available locally at [http://localhost:8080](http://localhost:8080).
 
 ## Local Development
-
-To run the Vite dev server locally:
-
+To run the development server locally:
 1. Install dependencies:
    ```bash
    npm install
    ```
-2. Start the development server:
+2. Start the Vite dev server:
    ```bash
    npm run dev
    ```
-3. Open `http://localhost:5173` in your browser.
+3. Open [http://localhost:5173](http://localhost:5173) in your browser.
+
+## License
+MIT
