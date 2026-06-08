@@ -1,0 +1,11 @@
+{
+  "title": "Gençlik ve Spor Bakanlığı - GENC2030 Dijital Yetkinlikler ve Yapay Zekâ Atölyesi",
+  "issuer": "T.C. Gençlik ve Spor Bakanlığı",
+  "issue_date": "2026-06-01",
+  "expiry_date": "No expiration",
+  "description": "Dijital Yetkinlikler ve Yapay Zekâ Atölyesi eğitimini başarıyla tamamlayarak katılım belgesi hak edildi.",
+  "credential_id": "12258619572788",
+  "credential_url": "https://drdogrulama.sanayi.gov.tr/tr/verify/12258619572788/?ref=email",
+  "skills": ["Yapay Zeka", "Dijital Yetkinlikler"],
+  "image_path": "src/certificates/images/genc2030-yapay-zeka-atolyesi.png"
+}
