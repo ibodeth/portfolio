@@ -1,6 +1,15 @@
 [
   {
     "date": "2026-07-28",
+    "macrostructure": "Map / Diagram",
+    "theme": "Aurora",
+    "enrichment": "E5 hand-built SVG",
+    "nav": "N5 Floating pill",
+    "footer": "Ft5 Statement",
+    "brief": "İbrahim Nuryağınlı portfolio · motion-first atmospheric redesign"
+  },
+  {
+    "date": "2026-07-28",
     "macrostructure": "Index-First",
     "theme": "Newsprint",
     "enrichment": "none",
