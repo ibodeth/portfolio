@@ -1,6 +1,8 @@
 import emailjs from "@emailjs/browser";
+import { motion, useReducedMotion } from "motion/react";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { useLanguage } from "../context/LanguageContext";
+import { SignalGlyph, SoftSignalScene } from "./SoftSignalScene";
 
 type Copy = {
   locale: string;
@@ -478,30 +480,53 @@ function createCredentials(lang: "tr" | "en"): Credential[] {
     .sort((a, b) => a.title.localeCompare(b.title, lang));
 }
 
-function ProjectRow({
+function ProjectCard({
   project,
   label,
+  index,
 }: {
   project: Project;
   label: string;
+  index: number;
 }) {
+  const reducedMotion = useReducedMotion();
   const content = (
     <>
-      <span className="index-row__date">{project.year}</span>
-      <span className="index-row__main">
-        <strong>{project.name}</strong>
-        <span>{project.description}</span>
+      <span className="project-card__topline">
+        <span>{project.year}</span>
+        <span>{project.href ? "↗" : project.status}</span>
       </span>
-      <span className="index-row__stack">{project.stack}</span>
-      <span className="index-row__action">
-        {project.href ? `${label} ↗` : project.status}
+      <strong>{project.name}</strong>
+      <span className="project-card__description">{project.description}</span>
+      {index === 0 ? (
+        <svg
+          className="project-card__trace"
+          viewBox="0 0 520 150"
+          aria-hidden="true"
+        >
+          <motion.path
+            d="M24 104 C92 26 152 132 226 66 C302 0 362 116 496 38"
+            initial={reducedMotion ? false : { pathLength: 0, opacity: 0 }}
+            whileInView={{ pathLength: 1, opacity: 1 }}
+            viewport={{ once: true, amount: 0.8 }}
+            transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+          />
+          <circle cx="24" cy="104" r="7" />
+          <rect x="218" y="58" width="16" height="16" rx="4" />
+          <path d="M487 29 L506 35 L493 48Z" />
+        </svg>
+      ) : null}
+      <span className="project-card__stack">{project.stack}</span>
+      <span className="project-card__action">
+        {project.href ? label : project.status}
+        <span aria-hidden="true">{project.href ? " ↗" : ""}</span>
       </span>
     </>
   );
 
   return project.href ? (
     <a
-      className="index-row index-row--link"
+      className={`project-card project-card--${index + 1}`}
       href={project.href}
       target="_blank"
       rel="noreferrer"
@@ -509,12 +534,37 @@ function ProjectRow({
       {content}
     </a>
   ) : (
-    <div className="index-row">{content}</div>
+    <article className={`project-card project-card--${index + 1}`}>
+      {content}
+    </article>
+  );
+}
+
+function SectionHeading({
+  id,
+  title,
+  body,
+  glyph,
+}: {
+  id: string;
+  title: string;
+  body?: string;
+  glyph: "loop" | "weave" | "stack" | "signal";
+}) {
+  return (
+    <header className="section-heading">
+      <div>
+        <h2 id={id}>{title}</h2>
+        {body ? <p>{body}</p> : null}
+      </div>
+      <SignalGlyph variant={glyph} />
+    </header>
   );
 }
 
 export function EditorialPortfolio() {
   const { lang, setLang } = useLanguage();
+  const reducedMotion = useReducedMotion();
   const copy = COPY[lang];
   const credentials = useMemo(() => createCredentials(lang), [lang]);
   const [formData, setFormData] = useState({
@@ -611,133 +661,257 @@ export function EditorialPortfolio() {
         {lang === "tr" ? "İçeriğe geç" : "Skip to content"}
       </a>
 
-      <header className="edge-header">
+      <header className="floating-nav">
         <a className="wordmark" href="#content" aria-label="İbrahim Nuryağınlı">
-          İN
+          İbrahim<span>/26</span>
         </a>
-        <a
-          className="header-cv"
-          href={assetUrl("documents/ibrahim-nuryaginli-cv.pdf")}
-          target="_blank"
-          rel="noreferrer"
-        >
-          {copy.cv} ↓
-        </a>
+        <nav aria-label={lang === "tr" ? "Ana navigasyon" : "Primary navigation"}>
+          <a href="#work">{lang === "tr" ? "İşler" : "Work"}</a>
+          <a href="#experience">{lang === "tr" ? "Deneyim" : "Experience"}</a>
+          <a href="#credentials">{lang === "tr" ? "Belgeler" : "Credentials"}</a>
+        </nav>
+        <div className="floating-nav__actions">
+          <span className="language-switch" aria-label={copy.languageLabel}>
+            <button
+              type="button"
+              className={lang === "tr" ? "is-active" : ""}
+              aria-pressed={lang === "tr"}
+              onClick={() => setLang("tr")}
+            >
+              TR
+            </button>
+            <button
+              type="button"
+              className={lang === "en" ? "is-active" : ""}
+              aria-pressed={lang === "en"}
+              onClick={() => setLang("en")}
+            >
+              EN
+            </button>
+          </span>
+          <a
+            className="nav-cv"
+            href={assetUrl("documents/ibrahim-nuryaginli-cv.pdf")}
+            target="_blank"
+            rel="noreferrer"
+          >
+            {copy.cv} ↓
+          </a>
+        </div>
       </header>
 
       <main id="content" className="page">
-        <section className="intro" aria-labelledby="page-title">
-          <div className="intro__identity">
-            <p className="intro__role">
-              {lang === "tr" ? "Yapay Zeka Geliştirici" : "AI Developer"}
+        <section
+          className="map-hero"
+          aria-labelledby="page-title"
+          onPointerMove={(event) => {
+            if (reducedMotion) return;
+            const rect = event.currentTarget.getBoundingClientRect();
+            event.currentTarget.style.setProperty(
+              "--spot-x",
+              `${event.clientX - rect.left}px`,
+            );
+            event.currentTarget.style.setProperty(
+              "--spot-y",
+              `${event.clientY - rect.top}px`,
+            );
+          }}
+          onPointerLeave={(event) => {
+            event.currentTarget.style.setProperty("--spot-x", "72%");
+            event.currentTarget.style.setProperty("--spot-y", "34%");
+          }}
+        >
+          <div className="map-hero__spotlight" aria-hidden="true" />
+          <motion.div
+            className="map-hero__copy"
+            initial={reducedMotion ? false : { opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <p className="map-hero__identity">
+              İbrahim Nuryağınlı
+              <span>
+                {lang === "tr"
+                  ? "Yapay zekâ geliştirici"
+                  : "AI developer"}
+              </span>
             </p>
-            <h1 id="page-title">İbrahim Nuryağınlı</h1>
-          </div>
-          <div className="intro__statement">
-            <p>{copy.intro}</p>
-            <div className="intro__meta">
+            <h1 id="page-title">
+              {lang === "tr"
+                ? "Fikirden çalışan sisteme."
+                : "From idea to working system."}
+            </h1>
+            <p className="map-hero__lede">{copy.intro}</p>
+            <div className="map-hero__actions">
+              <a className="primary-link" href="#work">
+                {lang === "tr" ? "İşleri keşfet" : "Explore the work"}
+                <span aria-hidden="true"> ↓</span>
+              </a>
+              <a
+                className="quiet-link"
+                href="mailto:ibodeth@proton.me"
+              >
+                {lang === "tr" ? "Bir şey üretelim" : "Let’s build something"}
+                <span aria-hidden="true"> ↗</span>
+              </a>
+            </div>
+            <div className="map-hero__meta">
               <span>{copy.availability}</span>
               <span>{copy.location}</span>
-              <span className="language-switch" aria-label={copy.languageLabel}>
-                <button
-                  type="button"
-                  className={lang === "tr" ? "is-active" : ""}
-                  aria-pressed={lang === "tr"}
-                  onClick={() => setLang("tr")}
-                >
-                  TR
-                </button>
-                <button
-                  type="button"
-                  className={lang === "en" ? "is-active" : ""}
-                  aria-pressed={lang === "en"}
-                  onClick={() => setLang("en")}
-                >
-                  EN
-                </button>
-              </span>
+            </div>
+          </motion.div>
+          <motion.div
+            className="map-hero__scene"
+            initial={reducedMotion ? false : { opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{
+              duration: 0.42,
+              ease: [0.16, 1, 0.3, 1],
+              delay: reducedMotion ? 0 : 0.16,
+            }}
+          >
+            <SoftSignalScene lang={lang} />
+          </motion.div>
+        </section>
+
+        <section
+          id="work"
+          className="page-section work-section"
+          aria-labelledby="projects-title"
+        >
+          <SectionHeading
+            id="projects-title"
+            title={copy.projectsTitle}
+            body={copy.projectsIntro}
+            glyph="loop"
+          />
+          <motion.div
+            className="project-field"
+            initial={reducedMotion ? false : "hidden"}
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+            variants={{
+              hidden: {},
+              visible: {
+                transition: { staggerChildren: 0.08, delayChildren: 0.05 },
+              },
+            }}
+          >
+            {PROJECTS[lang].map((project, index) => (
+              <motion.div
+                className={`project-field__item project-field__item--${index + 1}`}
+                key={project.name}
+                variants={{
+                  hidden: { opacity: 0, y: 10 },
+                  visible: {
+                    opacity: 1,
+                    y: 0,
+                    transition: {
+                      duration: 0.42,
+                      ease: [0.16, 1, 0.3, 1],
+                    },
+                  },
+                }}
+              >
+                <ProjectCard
+                  project={project}
+                  label={copy.openProject}
+                  index={index}
+                />
+              </motion.div>
+            ))}
+          </motion.div>
+        </section>
+
+        <section
+          id="experience"
+          className="page-section experience-section"
+          aria-labelledby="experience-title"
+        >
+          <div className="experience-section__intro">
+            <SectionHeading
+              id="experience-title"
+              title={copy.experienceTitle}
+              body={copy.experienceIntro}
+              glyph="weave"
+            />
+            <p className="experience-section__aside">
+              {lang === "tr"
+                ? "Lojistikten elektrikli araç altyapısına, her rol gerçek bir probleme temas ediyor."
+                : "From logistics to EV infrastructure, every role touches a real operational problem."}
+            </p>
+          </div>
+          <div className="experience-flow">
+            <svg
+              className="experience-flow__line"
+              viewBox="0 0 90 620"
+              aria-hidden="true"
+              preserveAspectRatio="none"
+            >
+              <path d="M48 0 C8 120 78 190 40 310 C2 430 82 500 44 620" />
+            </svg>
+            <div className="experience-flow__items">
+              {EXPERIENCE[lang].map((item, index) => {
+                const body = (
+                  <>
+                    <span className="experience-card__period">{item.period}</span>
+                    <span className="experience-card__body">
+                      <strong>{item.company}</strong>
+                      <span className="experience-card__role">{item.role}</span>
+                      <span>{item.description}</span>
+                    </span>
+                    <span className="experience-card__index">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                  </>
+                );
+
+                return item.href ? (
+                  <a
+                    className="experience-card"
+                    href={item.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    key={`${item.company}-${item.period}`}
+                  >
+                    {body}
+                  </a>
+                ) : (
+                  <article
+                    className="experience-card"
+                    key={`${item.company}-${item.period}`}
+                  >
+                    {body}
+                  </article>
+                );
+              })}
             </div>
           </div>
         </section>
 
-        <section className="page-section" aria-labelledby="projects-title">
-          <header className="section-head">
-            <h2 id="projects-title">{copy.projectsTitle}</h2>
-            <p>{copy.projectsIntro}</p>
-          </header>
-          <div className="index-list">
-            {PROJECTS[lang].map((project) => (
-              <ProjectRow
-                key={project.name}
-                project={project}
-                label={copy.openProject}
-              />
-            ))}
-          </div>
-        </section>
-
-        <section className="page-section" aria-labelledby="experience-title">
-          <header className="section-head">
-            <h2 id="experience-title">{copy.experienceTitle}</h2>
-            <p>{copy.experienceIntro}</p>
-          </header>
-          <div className="experience-list">
-            {EXPERIENCE[lang].map((item) => {
-              const body = (
-                <>
-                  <span className="experience-row__period">{item.period}</span>
-                  <span className="experience-row__main">
-                    <strong>{item.company}</strong>
-                    <span className="experience-row__role">{item.role}</span>
-                    <span>{item.description}</span>
-                  </span>
-                  <span className="experience-row__arrow">
-                    {item.href ? "↗" : ""}
-                  </span>
-                </>
-              );
-
-              return item.href ? (
-                <a
-                  className="experience-row experience-row--link"
-                  href={item.href}
-                  target="_blank"
-                  rel="noreferrer"
-                  key={`${item.company}-${item.period}`}
-                >
-                  {body}
-                </a>
-              ) : (
-                <div
-                  className="experience-row"
-                  key={`${item.company}-${item.period}`}
-                >
-                  {body}
-                </div>
-              );
-            })}
-          </div>
-        </section>
-
-        <section className="page-section page-section--split">
-          <div aria-labelledby="skills-title">
-            <header className="section-head section-head--compact">
-              <h2 id="skills-title">{copy.skillsTitle}</h2>
-            </header>
-            <div className="skill-list">
+        <section
+          id="skills"
+          className="page-section capability-section"
+          aria-labelledby="skills-title"
+        >
+          <div className="capability-section__skills">
+            <SectionHeading
+              id="skills-title"
+              title={copy.skillsTitle}
+              glyph="stack"
+            />
+            <div className="capability-list">
               {SKILLS[lang].map((skill) => (
-                <div className="skill-item" key={skill.title}>
+                <article className="capability-item" key={skill.title}>
                   <h3>{skill.title}</h3>
                   <p>{skill.body}</p>
-                </div>
+                </article>
               ))}
             </div>
           </div>
 
-          <div aria-labelledby="education-title">
-            <header className="section-head section-head--compact">
-              <h2 id="education-title">{copy.educationTitle}</h2>
-            </header>
+          <div className="capability-section__education" aria-labelledby="education-title">
+            <h2 id="education-title">{copy.educationTitle}</h2>
             <div className="education-list">
               <article>
                 <p>2025–</p>
@@ -762,15 +936,21 @@ export function EditorialPortfolio() {
           </div>
         </section>
 
-        <section className="page-section" aria-labelledby="credentials-title">
-          <header className="section-head">
-            <h2 id="credentials-title">{copy.credentialsTitle}</h2>
-            <p>{copy.credentialsIntro}</p>
-          </header>
-          <div className="credential-list">
-            {credentials.map((credential) => (
+        <section
+          id="credentials"
+          className="page-section credentials-section"
+          aria-labelledby="credentials-title"
+        >
+          <SectionHeading
+            id="credentials-title"
+            title={copy.credentialsTitle}
+            body={copy.credentialsIntro}
+            glyph="signal"
+          />
+          <div className="credential-gallery">
+            {credentials.map((credential, index) => (
               <a
-                className="credential-row"
+                className={`credential-tile credential-tile--${index + 1}`}
                 href={credential.image}
                 target="_blank"
                 rel="noreferrer"
@@ -783,23 +963,24 @@ export function EditorialPortfolio() {
                   height="180"
                   loading="lazy"
                 />
-                <span className="credential-row__main">
+                <span className="credential-tile__veil">
                   <strong>{credential.title}</strong>
                   <span>{credential.authority}</span>
-                </span>
-                <span className="credential-row__meta">
                   <span>{credential.date}</span>
-                  <span>
+                  <span className="credential-tile__id">
                     {copy.certificateId}: {credential.verifyId}
                   </span>
                 </span>
-                <span className="credential-row__arrow">↗</span>
+                <span className="credential-tile__arrow" aria-hidden="true">
+                  ↗
+                </span>
               </a>
             ))}
           </div>
 
           <aside className="reference-note">
-            <div>
+            <SignalGlyph variant="loop" />
+            <div className="reference-note__copy">
               <h3>{copy.referenceTitle}</h3>
               <p>{copy.referenceBody}</p>
             </div>
@@ -814,14 +995,17 @@ export function EditorialPortfolio() {
         </section>
 
         <section
+          id="contact"
           className="page-section contact-section"
           aria-labelledby="contact-title"
         >
           <div className="contact-copy">
-            <header className="section-head section-head--compact">
-              <h2 id="contact-title">{copy.contactTitle}</h2>
-              <p>{copy.contactIntro}</p>
-            </header>
+            <SectionHeading
+              id="contact-title"
+              title={copy.contactTitle}
+              body={copy.contactIntro}
+              glyph="weave"
+            />
             <div className="contact-links">
               <a href="mailto:ibodeth@proton.me">ibodeth@proton.me ↗</a>
               <a
@@ -913,6 +1097,15 @@ export function EditorialPortfolio() {
               type="submit"
               disabled={isSubmitting}
               aria-busy={isSubmitting}
+              data-state={
+                isSubmitting
+                  ? "loading"
+                  : formStatus?.kind === "success"
+                    ? "success"
+                    : formStatus?.kind === "error"
+                      ? "error"
+                      : "idle"
+              }
             >
               {isSubmitting ? copy.sending : copy.send}
             </button>
@@ -930,15 +1123,19 @@ export function EditorialPortfolio() {
         </section>
       </main>
 
-      <footer className="letter-footer">
-        <p className="letter-footer__close">
-          {copy.signoff}
-          <br />
-          <span>İbrahim</span>
+      <footer className="statement-footer">
+        <p>
+          {lang === "tr"
+            ? "Bir fikrin varsa, birlikte çalıştırabiliriz."
+            : "If you have an idea, we can make it run."}
         </p>
-        <p className="letter-footer__ps">
-          P.S. {copy.postscript} · {new Date().getFullYear()}
-        </p>
+        <div className="statement-footer__meta">
+          <span>İbrahim Nuryağınlı</span>
+          <span>
+            {copy.postscript} · {new Date().getFullYear()}
+          </span>
+          <a href="#content">{lang === "tr" ? "Yukarı çık" : "Back to top"} ↑</a>
+        </div>
       </footer>
     </div>
   );
