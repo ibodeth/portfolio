@@ -1,0 +1,13 @@
+{
+  "date": "2026-07-28",
+  "framework": "Vite 6 + React 18 + Tailwind CSS 4",
+  "fontStack": [
+    "Outfit",
+    "Plus Jakarta Sans",
+    "JetBrains Mono"
+  ],
+  "palette": "Dark Shadcn tokens with indigo/purple neon accents",
+  "motion": "motion/react and Lenis installed; production components used pervasive motion",
+  "spacing": "Tailwind utilities with mixed bespoke values",
+  "decision": "Preserve Vite, local body/mono fonts, bilingual context, contact integration, certificate asset system. Replace the visual layer with an editorial index."
+}
